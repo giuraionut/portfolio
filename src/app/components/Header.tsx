@@ -3,10 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ModeToggle } from '@/components/ModeToggle';
+import { ModeToggle } from './ModeToggle';
 const SCROLL_THRESHOLD = 50;
 
-export default function Header() {
+type HeaderProps = {
+  name: string;
+};
+export default function Header({ name }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -40,7 +43,7 @@ export default function Header() {
           href='/'
           className='font-bold text-xl text-gray-900 dark:text-white hover:text-primary transition-colors'
         >
-          <span className='text-primary'>Giura Ionut</span>
+          <span className='text-primary'>{name}</span>
         </Link>
 
         <div className='flex items-center gap-1 md:gap-6'>

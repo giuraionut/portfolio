@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
-import './globals.css';
-import { ThemeProvider } from '@/components/ThemeProvider';
+import '../globals.css';
+import { ThemeProvider } from '../components/ThemeProvider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -15,10 +15,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: 'Portfolio | Giura Ionut',
-  description: 'Portfolio of Giura Ionut, a fullstack web developer specializing in modern web technologies.',
+  description:
+    'Portfolio of Giura Ionut, a fullstack web developer specializing in modern web technologies.',
   openGraph: {
     title: 'Portfolio | Giura Ionut',
-    description: 'Portfolio of Giura Ionut, a fullstack web developer specializing in modern web technologies.',
+    description:
+      'Portfolio of Giura Ionut, a fullstack web developer specializing in modern web technologies.',
     url: 'https://giuraionut.dev',
     siteName: 'Giura Ionut Portfolio',
     images: [
@@ -35,7 +37,8 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Portfolio | Giura Ionut',
-    description: 'Portfolio of Giura Ionut, a fullstack web developer specializing in modern web technologies.',
+    description:
+      'Portfolio of Giura Ionut, a fullstack web developer specializing in modern web technologies.',
     images: ['https://giuraionut.dev/assets/og-image.png'],
     creator: '@giuraionut',
   },

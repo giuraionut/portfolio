@@ -1,15 +1,14 @@
 import Link from 'next/link';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from './ui/tooltip';
+
 import GitHubIcon from './icons/GitHubIcon';
 import { Mail } from 'lucide-react';
 import LinkedInIcon from './icons/Linkedin';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-export default function Footer() {
+type FooterProps = {
+  name: string;
+};
+export default function Footer({ name }: FooterProps) {
   return (
     <footer className='py-8 px-6 sm:px-8 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800'>
       <div className='max-w-6xl mx-auto'>
@@ -79,7 +78,7 @@ export default function Footer() {
         </div>
 
         <div className='mt-6 pt-6 border-t border-gray-200 dark:border-gray-800 text-center text-sm text-gray-600 dark:text-gray-400'>
-          © {new Date().getFullYear()} Giura Ionut. All rights reserved.
+          © {new Date().getFullYear()} {name}. All rights reserved.
         </div>
       </div>
     </footer>

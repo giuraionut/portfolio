@@ -10,22 +10,16 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { Mail, Download, ChevronDown } from 'lucide-react';
+import { Download, ChevronDown, Mail } from 'lucide-react';
 import { fadeIn } from '@/lib/animations';
-import GitHubIcon from './icons/GitHubIcon';
-import StaggeredText from './StaggeredText';
-import LinkedInIcon from './icons/Linkedin';
 import Image from 'next/image';
-import MotionContainer from './MotionContainer';
 import Link from 'next/link';
+import { ContentSection, SocialLink } from '@prisma/client';
+import GitHubIcon from '@/app/components/icons/GitHubIcon';
+import LinkedInIcon from '@/app/components/icons/Linkedin';
+import MotionContainer from '@/app/components/MotionContainer';
+import StaggeredText from '@/app/components/StaggeredText';
 
-const HERO_TAGS: string[] = [
-  'Frontend Developer',
-  'Backend Developer',
-  'Fullstack Developer',
-  'UI/UX Enthusiast',
-  'TypeScript Advocate',
-];
 function useLoopedIndex(length: number, delay: number = 3000): number {
   const [index, setIndex] = useState(0);
   useEffect(() => {
@@ -38,8 +32,46 @@ function useLoopedIndex(length: number, delay: number = 3000): number {
   return index;
 }
 
-export default function HeroSection() {
-  const tagIndex = useLoopedIndex(HERO_TAGS.length, 2500);
+export type HeroProps = {
+  name: string;
+  avatarUrl: string;
+  content: ContentSection;
+  keywords: string[];
+  socialLinks: SocialLink[];
+};
+
+export default function HeroSectionUI({
+  name,
+  avatarUrl,
+  content,
+  keywords,
+  socialLinks,
+}: HeroProps) {
+  const socials = () => {
+    return (
+      <div className='flex items-center gap-4'>
+        <TooltipProvider>
+          {socialLinks.map((link) => {
+            return (
+              <Tooltip key={link.name}>
+                <TooltipTrigger asChild>
+                  <Link href={link.url} target='_blank'>
+                    <span className='sr-only'>{link.name}</span>
+                    {link.name === 'github' && <GitHubIcon />}
+                    {link.name === 'linkedin' && <LinkedInIcon />}
+                    {link.name === 'email' && <Mail />}
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent>{link.url}</TooltipContent>
+              </Tooltip>
+            );
+          })}
+        </TooltipProvider>
+      </div>
+    );
+  };
+
+  const tagIndex = useLoopedIndex(keywords.length, 2500);
 
   const scrollToProjects = () => {
     document
@@ -53,7 +85,7 @@ export default function HeroSection() {
       className='min-h-screen flex flex-col md:flex-row items-center justify-between px-8 pt-24 pb-16 md:py-24 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-gray-900 dark:to-gray-800'
     >
       <Head>
-        <title>Giura Ionut | Web Developer Portfolio</title>
+        <title>{name} | Web Developer Portfolio</title>
         <meta
           name='description'
           content='Portfolio of Your Name, a fullstack web developer specializing in modern web technologies.'
@@ -61,13 +93,13 @@ export default function HeroSection() {
       </Head>
       <div className='w-full md:w-1/2 text-center md:text-left mb-10 md:mb-0'>
         <MotionContainer animation='popIn'>
-          <span className='inline-block'>Hi, my name is</span>
+          <span className='inline-block'>{content.shortDescription}</span>
         </MotionContainer>
 
         <MotionContainer animation='bounce'>
           <h1 className='text-5xl sm:text-6xl lg:text-7xl font-extrabold mb-4 text-gray-900 dark:text-white'>
             <span className='bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-blue-500 dark:from-indigo-400 dark:to-blue-300'>
-              Giura Ionut
+              {name}
             </span>
           </h1>
         </MotionContainer>
@@ -76,7 +108,7 @@ export default function HeroSection() {
           <AnimatePresence mode='wait'>
             <MotionContainer animation='slideUp' index={tagIndex}>
               <h1 className='text-2xl lg:text-3xl font-medium text-gray-700 dark:text-gray-300'>
-                {HERO_TAGS[tagIndex]}
+                {keywords[tagIndex]}
               </h1>
             </MotionContainer>
           </AnimatePresence>
@@ -84,7 +116,7 @@ export default function HeroSection() {
 
         <StaggeredText
           className='max-w-lg text-lg text-gray-600 dark:text-gray-400'
-          text={`I create engaging digital experiences with modern web technologies, focusing on clean code and intuitive user interfaces.`}
+          text={content.bodies[0]}
           spacing='0.25rem'
         />
 
@@ -126,7 +158,7 @@ export default function HeroSection() {
           <MotionContainer animation='popIn'>
             <div className='w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 relative'>
               <Image
-                src='/images/avatar.png'
+                src={avatarUrl}
                 alt='Your Name'
                 fill
                 className='w-full h-full rounded-full bg-gradient-to-r from-indigo-500 to-blue-500 dark:from-indigo-600 dark:to-blue-600 overflow-hidden p-1'
@@ -139,78 +171,7 @@ export default function HeroSection() {
             </div>
           </MotionContainer>
 
-          <MotionContainer variants={fadeIn()}>
-            <div className='flex items-center gap-4'>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <MotionContainer
-                      transition={{ type: 'spring', stiffness: 300 }}
-                      whileHover={{ scale: 1.1, y: -2 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Link
-                        className='text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 p-2 cursor-pointer'
-                        href='https://github.com/yourusername'
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        aria-label='Visit GitHub profile'
-                      >
-                        <GitHubIcon size={22} />
-                      </Link>
-                    </MotionContainer>
-                  </TooltipTrigger>
-                  <TooltipContent>GitHub</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <MotionContainer
-                      transition={{ type: 'spring', stiffness: 300 }}
-                      whileHover={{ scale: 1.1, y: -2 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Link
-                        className='text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 p-2 cursor-pointer'
-                        href='https://linkedin.com/yourusername'
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        aria-label='Visit Linkedin profile'
-                      >
-                        <LinkedInIcon size={22} />
-                      </Link>
-                    </MotionContainer>
-                  </TooltipTrigger>
-                  <TooltipContent>LinkedIn</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <MotionContainer
-                      transition={{ type: 'spring', stiffness: 300 }}
-                      whileHover={{ scale: 1.1, y: -2 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      <Link
-                        className='text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 p-2 cursor-pointer'
-                        href='mailto:your.email@example.com'
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        aria-label='Visit Linkedin profile'
-                      >
-                        <Mail size={22} />
-                      </Link>
-                    </MotionContainer>
-                  </TooltipTrigger>
-                  <TooltipContent>Email Me</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-          </MotionContainer>
+          <MotionContainer variants={fadeIn()}>{socials()}</MotionContainer>
         </div>
       </MotionContainer>
     </section>

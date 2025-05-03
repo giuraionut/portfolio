@@ -5,10 +5,30 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import Image from 'next/image';
-import MotionContainer from './MotionContainer';
 import Link from 'next/link';
+import { ContentSection, PersonalInfo } from '@prisma/client';
+import MotionContainer from '@/app/components/MotionContainer';
+export type AboutProps = {
+  content: ContentSection;
+  personalInfo: PersonalInfo;
+};
+export default function AboutSectionUI({ content, personalInfo }: AboutProps) {
 
-export default function AboutSection() {
+  const descriptions = () => {
+    return content.bodies.map((body: string, index) => (
+      <MotionContainer
+        key={index}
+        useInView={true}
+        once={true}
+        animation='fadeIn'
+        delay={0.4}
+      >
+        <p className='text-gray-600 dark:text-gray-400 leading-relaxed'>
+          {body}
+        </p>
+      </MotionContainer>
+    ));
+  };
   return (
     <section
       id='about'
@@ -26,10 +46,10 @@ export default function AboutSection() {
               variant='outline'
               className='mb-3 text-primary dark:text-white'
             >
-              About
+              {content.title}
             </Badge>
             <h2 className='text-3xl sm:text-4xl font-bold mb-6 text-gray-800 dark:text-white'>
-              Get to know me
+              {content.shortDescription}
             </h2>
             <Separator className='w-20 h-1 mx-auto bg-primary' />
           </div>
@@ -70,38 +90,10 @@ export default function AboutSection() {
                 delay={0.3}
               >
                 <h3 className='text-xl font-semibold text-gray-800 dark:text-white'>
-                  Frontend Developer based in [Your Location]
+                  {personalInfo.title} based in {personalInfo.location}
                 </h3>
               </MotionContainer>
-
-              <MotionContainer
-                useInView={true}
-                once={true}
-                animation='fadeIn'
-                delay={0.4}
-              >
-                <p className='text-gray-600 dark:text-gray-400 leading-relaxed'>
-                  I&apos;m a passionate and results-driven Web Developer with [X]
-                  years of experience creating dynamic, responsive, and
-                  user-friendly web applications. My expertise lies in modern
-                  frontend frameworks and server-side technologies.
-                </p>
-              </MotionContainer>
-
-              <MotionContainer
-                useInView={true}
-                once={true}
-                animation='fadeIn'
-                delay={0.5}
-              >
-                <p className='text-gray-600 dark:text-gray-400 leading-relaxed'>
-                  I thrive in collaborative environments and enjoy tackling
-                  complex challenges to deliver high-quality software solutions.
-                  My approach combines technical expertise with a keen eye for
-                  design and user experience.
-                </p>
-              </MotionContainer>
-
+              {descriptions()}
               <MotionContainer
                 useInView={true}
                 once={true}

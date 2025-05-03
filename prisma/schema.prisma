@@ -1,0 +1,116 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Supported categories for skills.
+enum SkillCategory {
+  FRONTEND
+  BACKEND
+  DEVOPS
+  DATABASE
+  OTHER
+}
+
+/// Types of content sections (hero, about, contact, projects, etc.).
+enum SectionType {
+  HERO
+  ABOUT
+  CONTACT
+  PROJECTS
+  SKILLS
+  CUSTOM
+}
+
+/// A generic block of content (e.g. hero bio, about-me).
+model ContentSection {
+  id               String      @id @default(uuid())
+  sectionType      SectionType @default(CUSTOM)
+  title            String?
+  bodies           String[]    @db.Text
+  shortDescription String?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  
+  owner   PersonalInfo @relation(fields: [ownerId], references: [id])
+  ownerId String
+}
+
+/// Core profile data.
+model PersonalInfo {
+  id          String           @id @default(uuid())
+  version     Int              @default(1)
+  name        String
+  title       String
+  email       String?          @unique
+  location    String?
+  avatarUrl   String?
+  resumeUrl   String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  socialLinks SocialLink[]
+  sections    ContentSection[]
+  skills      Skill[]
+  projects    Project[]
+}
+
+/// Individual skills with category and optional rating.
+model Skill {
+  id        String        @id @default(uuid())
+  name      String        @unique
+  category  SkillCategory @default(OTHER)
+  website   String?
+  icon      String?
+  color     String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  profiles PersonalInfo[]
+  projects Project[]      @relation("ProjectSkills")
+}
+
+model SocialLink {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  PersonalInfo PersonalInfo[]
+}
+
+/// Projects you’ve built or contributed to.
+model Project {
+  id              String   @id @default(uuid())
+  title           String
+  slug            String   @unique
+  description     String   @db.Text
+  longDescription String?  @db.Text
+  imageUrl        String?
+  liveUrl         String?
+  githubUrl       String?
+  featured        Boolean  @default(false)
+  order           Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  skills   Skill[]        @relation("ProjectSkills")
+  profiles PersonalInfo[]
+}
+
+/// Persisted contact form submissions.
+model ContactMessage {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+}

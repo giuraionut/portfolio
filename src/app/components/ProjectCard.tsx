@@ -13,31 +13,17 @@ import {
   CardDescription,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
 import { HoverCard } from './HoverCard';
-import { SKILLS } from '@/constants/skills';
 import SkillBadge from './SkillBadge';
-
-interface Project {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-  link: string;
-  github?: string;
-  tech: string[];
-  featured?: boolean;
-}
+import { ProjectWithSkills } from '../(landing)/projects/ProjectsSectionUI';
 
 interface ProjectCardProps {
-  project: Project;
-  isLoading?: boolean;
+  project: ProjectWithSkills;
   cardStyle?: 'default' | 'compact' | 'featured';
 }
 
 export default function ProjectCard({
   project,
-  isLoading = false,
   cardStyle = 'default',
 }: ProjectCardProps) {
   return (
@@ -51,11 +37,9 @@ export default function ProjectCard({
               cardStyle === 'compact' ? 'rounded-t-lg' : ''
             }`}
           >
-            {isLoading ? (
-              <Skeleton className='w-full h-full' />
-            ) : (
+            {project.imageUrl && (
               <Image
-                src={project.image}
+                src={project.imageUrl}
                 alt={`${project.title} screenshot`}
                 fill
                 sizes='(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
@@ -73,29 +57,29 @@ export default function ProjectCard({
               {project.description}
             </CardDescription>
             <div className='flex flex-wrap gap-1 mb-4'>
-              {project.tech.map((tech, i) => (
-                <SkillBadge
-                  key={i}
-                  name={SKILLS.find((s) => s.name === tech)?.name || ''}
-                  website={SKILLS.find((s) => s.name === tech)?.website}
-                />
-              ))}
+              {project.skills.map((skill) => {
+                return (
+                  <SkillBadge
+                    key={`${project.id}-${skill.name}`}
+                    skill={skill}
+                  />
+                );
+              })}
             </div>
             <div className='mt-auto'>
-              <Button
-                asChild
-                variant={cardStyle === 'featured' ? 'default' : 'outline'}
-                className='w-full group'
-              >
-                <a
-                  href={project.link}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                >
-                  View Project
-                  <ExternalLink className='ml-2 h-4 w-4 transition-transform group-hover:translate-x-1' />
-                </a>
-              </Button>
+              {project.liveUrl && (
+                <Button variant='default' className='w-full group' asChild>
+                  <a
+                    href={project.liveUrl}
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    aria-label={`View live project ${project.title}`}
+                  >
+                    View Project
+                    <ExternalLink className='ml-2 h-4 w-4 transition-transform group-hover:translate-x-1' />
+                  </a>
+                </Button>
+              )}
             </div>
           </div>
         </CardContent>

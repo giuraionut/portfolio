@@ -24,9 +24,10 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 
 import { Terminal, Mail } from 'lucide-react';
-import GitHubIcon from './icons/GitHubIcon';
-import LinkedInIcon from './icons/Linkedin';
-import MotionContainer from './MotionContainer';
+import { ContentSection, SocialLink } from '@prisma/client';
+import MotionContainer from '@/app/components/MotionContainer';
+import GitHubIcon from '@/app/components/icons/GitHubIcon';
+import LinkedInIcon from '@/app/components/icons/Linkedin';
 
 const contactFormSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
@@ -39,7 +40,14 @@ const contactFormSchema = z.object({
 
 type ContactFormValues = z.infer<typeof contactFormSchema>;
 
-export default function ContactSection() {
+export type ContactProps = {
+  content: ContentSection;
+  socialLinks: SocialLink[];
+};
+export default function ContactSectionUI({
+  content,
+  socialLinks,
+}: ContactProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{
     type: 'success' | 'error';
@@ -101,18 +109,18 @@ export default function ContactSection() {
               variant='outline'
               className='mb-3 text-primary dark:text-white'
             >
-              Contact
+              {content.title}
             </Badge>
             <h2 className='text-3xl sm:text-4xl font-bold mb-6 text-gray-800 dark:text-white'>
-              Get In Touch
+              {content.shortDescription}
             </h2>
             <Separator className='w-20 h-1 mx-auto bg-primary' />
             <p className='mt-6 text-gray-600 dark:text-gray-400 max-w-2xl mx-auto'>
-              Have a question or want to work together? Feel free to reach out!
+              {content.bodies[0]}
             </p>
           </div>
 
-          <div className='grid md:grid-cols-5 gap-10'>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-10'>
             <MotionContainer
               useInView={true}
               once={true}
@@ -124,102 +132,42 @@ export default function ContactSection() {
                 <Card className='border-none shadow-md bg-white dark:bg-gray-900 h-full'>
                   <CardContent className='pt-6'>
                     <div className='space-y-6'>
-                      {/* --- Email Item --- */}
-                      <MotionContainer
-                        useInView={true} // Trigger individually if card is tall
-                        once={true}
-                        viewportAmount={0.5}
-                        animation='fadeIn' // Animation for the item itself
-                        delay={SECTION_BASE_DELAY + ITEM_STAGGER * 1} // Staggered delay relative to column
-                        customTransition='spring'
-                        whileHover={{ x: 5 }}
-                      >
-                        <div className='flex items-start gap-4 cursor-pointer group'>
-                          <div className='mt-1 bg-primary/10 p-2 rounded-md text-primary transition-colors group-hover:bg-primary/20'>
-                            <Mail className='h-5 w-5' />
-                          </div>
-                          <div>
-                            <h3 className='font-medium text-gray-900 dark:text-white'>
-                              Email
-                            </h3>
-                            <p className='text-gray-600 dark:text-gray-400 mt-1'>
-                              <a
-                                href='mailto:your.email@example.com'
-                                className='hover:text-primary transition-colors'
-                              >
-                                your.email@example.com{' '}
-                                {/* TODO: Update Email */}
-                              </a>
-                            </p>
-                          </div>
-                        </div>
-                      </MotionContainer>
-
-                      {/* --- LinkedIn Item --- */}
-                      <MotionContainer
-                        useInView={true}
-                        once={true}
-                        viewportAmount={0.5}
-                        animation='fadeIn'
-                        delay={SECTION_BASE_DELAY + ITEM_STAGGER * 2} // Staggered delay
-                        customTransition='spring'
-                        whileHover={{ x: 5 }}
-                      >
-                        <div className='flex items-start gap-4 cursor-pointer group'>
-                          <div className='mt-1 bg-primary/10 p-2 rounded-md text-primary transition-colors group-hover:bg-primary/20'>
-                            <LinkedInIcon className='h-5 w-5' />
-                          </div>
-                          <div>
-                            <h3 className='font-medium text-gray-900 dark:text-white'>
-                              LinkedIn
-                            </h3>
-                            <p className='text-gray-600 dark:text-gray-400 mt-1'>
-                              <a
-                                href='https://linkedin.com/in/yourusername'
-                                target='_blank'
-                                rel='noopener noreferrer'
-                                className='hover:text-primary transition-colors'
-                              >
-                                linkedin.com/in/yourusername{' '}
-                                {/* TODO: Update Link */}
-                              </a>
-                            </p>
-                          </div>
-                        </div>
-                      </MotionContainer>
-
-                      {/* --- GitHub Item --- */}
-                      <MotionContainer
-                        useInView={true}
-                        once={true}
-                        viewportAmount={0.5}
-                        animation='fadeIn'
-                        delay={SECTION_BASE_DELAY + ITEM_STAGGER * 3} // Staggered delay
-                        customTransition='spring'
-                        whileHover={{ x: 5 }}
-                      >
-                        <div className='flex items-start gap-4 cursor-pointer group'>
-                          <div className='mt-1 bg-primary/10 p-2 rounded-md text-primary transition-colors group-hover:bg-primary/20'>
-                            <GitHubIcon className='h-5 w-5' />
-                          </div>
-                          <div>
-                            <h3 className='font-medium text-gray-900 dark:text-white'>
-                              GitHub
-                            </h3>
-                            <p className='text-gray-600 dark:text-gray-400 mt-1'>
-                              <a
-                                href='https://github.com/yourusername'
-                                target='_blank'
-                                rel='noopener noreferrer'
-                                className='hover:text-primary transition-colors'
-                              >
-                                github.com/yourusername{' '}
-                                {/* TODO: Update Link */}
-                              </a>
-                            </p>
-                          </div>
-                        </div>
-                      </MotionContainer>
+                      {socialLinks &&
+                        socialLinks.map((link) => {
+                          return (
+                            <MotionContainer
+                              key={link.id}
+                              useInView={true}
+                              once={true}
+                              viewportAmount={0.5}
+                              animation='fadeIn'
+                              delay={SECTION_BASE_DELAY + ITEM_STAGGER * 1}
+                              customTransition='spring'
+                              whileHover={{ x: 5 }}
+                            >
+                              <div className='flex items-start gap-4 cursor-pointer group'>
+                                <div className='mt-1 bg-primary/10 p-2 rounded-md text-primary transition-colors group-hover:bg-primary/20'>
+                                  {link.name === 'github' && <GitHubIcon />}
+                                  {link.name === 'linkedin' && <LinkedInIcon />}
+                                  {link.name === 'email' && <Mail />}
+                                </div>
+                                <div>
+                                  <h3 className='font-medium text-gray-900 dark:text-white'>
+                                    {link.name}
+                                  </h3>
+                                  <p className='text-gray-600 dark:text-gray-400 mt-1'>
+                                    <a
+                                      href='mailto:your.email@example.com'
+                                      className='hover:text-primary transition-colors'
+                                    >
+                                      {link.url}
+                                    </a>
+                                  </p>
+                                </div>
+                              </div>
+                            </MotionContainer>
+                          );
+                        })}
                     </div>
                   </CardContent>
                 </Card>

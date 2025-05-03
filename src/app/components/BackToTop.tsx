@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import MotionContainer from './MotionContainer';
-import { Button } from './ui/button';
+import { Button } from '@/components/ui/button';
 
 export default function BackToTop() {
   const [show, setShow] = useState(false);

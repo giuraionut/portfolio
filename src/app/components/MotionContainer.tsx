@@ -1,14 +1,26 @@
 'use client';
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-import React, { ReactElement, isValidElement } from 'react';
+import React from 'react';
 import { motion, MotionProps, Transition } from 'framer-motion';
 import * as animations from '@/lib/animations';
 import { useMotionConfig } from './MotionConfigContext';
 
 /** Supported animation variants */
-type Animation = 'slideUp' | 'fadeIn' | 'popIn' | 'stagger' | 'spring' | 'fadeLeft' | 
-  'fadeRight' | 'fadeDown' | 'slideDown' | 'slideLeft' | 'slideRight' | 'pulse' | 
-  'rotate' | 'flip' | 'bounce';
+type Animation =
+  | 'slideUp'
+  | 'fadeIn'
+  | 'popIn'
+  | 'stagger'
+  | 'spring'
+  | 'fadeLeft'
+  | 'fadeRight'
+  | 'fadeDown'
+  | 'slideDown'
+  | 'slideLeft'
+  | 'slideRight'
+  | 'pulse'
+  | 'rotate'
+  | 'flip'
+  | 'bounce';
 
 /** Supported custom transition presets */
 type CustomTransition = 'spring' | 'default' | 'bounce' | 'gentle';
@@ -32,17 +44,8 @@ interface MotionContainerProps extends MotionProps {
   /** Animation options to pass to the animation variant */
   animationOptions?: animations.MotionOptions;
   /** Exactly one child element required */
-  children: ReactElement<any, string | React.JSXElementConstructor<any>>;
+  children: React.ReactElement;
 }
-
-/**
- * Determines the appropriate motion tag based on child element
- */
-const getMotionTag = (children: ReactElement) => {
-  const childType = children.type;
-  const tagName = typeof childType === 'string' ? childType : undefined;
-  return tagName && (motion as any)[tagName] ? (motion as any)[tagName] : motion.div;
-};
 
 /**
  * A wrapper that applies motion variants and optional scroll or presence behaviors,
@@ -63,34 +66,26 @@ export default function MotionContainer({
 }: MotionContainerProps) {
   // Get defaults from context
   const config = useMotionConfig();
-  
-  // Merge defaults with props
-  const finalAnimation = animation || config.defaultAnimation as Animation;
+
+  // Determine final settings
+  const finalAnimation = animation || (config.defaultAnimation as Animation);
   const finalDelay = delay !== undefined ? delay : config.defaultDelay;
   const finalViewportAmount = viewportAmount || config.defaultViewport.amount;
   const finalOnce = once !== undefined ? once : config.defaultViewport.once;
   const finalCustomTransition = customTransition || 'default';
-  
-  // Ensure a valid React element was passed
-  if (!isValidElement(children)) {
-    console.error('MotionContainer requires exactly one React element child.');
-    return <>{children}</>;
-  }
 
-  // Check if the animation function exists
+  // Validate animation existence
   if (!animations[finalAnimation]) {
     console.error(`Animation "${finalAnimation}" not found in animations library.`);
     return <>{children}</>;
   }
 
-  // Get the animation with options
+  // Merge options and create variants
   const mergedAnimationOptions = {
     ...config.defaultAnimationOptions,
     ...animationOptions,
-    delay: finalDelay
+    delay: finalDelay,
   };
-  
-  // Create animation variants with merged options
   const variants = animations[finalAnimation](mergedAnimationOptions);
 
   // Define transition presets
@@ -101,14 +96,8 @@ export default function MotionContainer({
     gentle: { type: 'spring', stiffness: 100, damping: 20 },
   };
 
-  // Determine tag name for motion component
-  const MotionTag = getMotionTag(children);
-
-  // Destructure original child props
-  const { children: nestedChildren, ...childProps } = (children.props as any);
-
-  // Calculate view and animation props
-  const animationProps = config.animationsEnabled 
+  // Define animation props based on scroll or animate trigger
+  const animationProps = config.animationsEnabled
     ? {
         initial: 'hidden',
         ...(useInView
@@ -118,16 +107,16 @@ export default function MotionContainer({
       }
     : { initial: false };
 
+  // Render a motion.div wrapper that simply nests the original child
   return (
-    <MotionTag
+    <motion.div
       key={index}
       variants={variants}
       {...animationProps}
       transition={transitionPresets[finalCustomTransition]}
-      {...childProps}
       {...rest}
     >
-      {nestedChildren}
-    </MotionTag>
+      {children}
+    </motion.div>
   );
 }
