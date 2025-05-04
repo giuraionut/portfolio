@@ -4,6 +4,7 @@ import GitHubIcon from './icons/GitHubIcon';
 import { Mail } from 'lucide-react';
 import LinkedInIcon from './icons/Linkedin';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import AppVersion from './AppVersion';
 
 type FooterProps = {
   name: string;
@@ -23,6 +24,7 @@ export default function Footer({ name }: FooterProps) {
             <p className='mt-2 text-sm text-gray-600 dark:text-gray-400'>
               Creating exceptional digital experiences
             </p>
+            <AppVersion/>
           </div>
 
           <div className='flex space-x-4'>
