@@ -3,15 +3,17 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Code, Palette, Server } from 'lucide-react';
+import { Code, Container, Database, Palette, Server } from 'lucide-react';
 import { ContentSection, Skill } from '@prisma/client';
 import MotionContainer from '@/app/components/MotionContainer';
 import SkillBadge from '@/app/components/SkillBadge';
 
 const ICONS: Record<string, React.ReactNode> = {
-  Frontend: <Code className='h-5 w-5' />,
-  Backend: <Server className='h-5 w-5' />,
-  Design: <Palette className='h-5 w-5' />,
+  FRONTEND: <Code className='h-5 w-5' />,
+  BACKEND: <Server className='h-5 w-5' />,
+  DATABASE: <Database className='h-5 w-5' />,
+  DEVOPS: <Container className='h-5 w-5' />,
+  OTHER: <Palette className='h-5 w-5' />,
 };
 
 export type SkillsProps = {
@@ -100,46 +102,6 @@ export default function SkillsSectionUI({ content, skills }: SkillsProps) {
             <Separator className='w-20 h-1 mx-auto bg-primary' />
           </div>
           {skillsRender()}
-          {/* <div className='grid md:grid-cols-3 gap-8'>
-            {categories.map((category, index) => {
-              const filteredSkills = (SKILLS as Skill[]).filter(
-                (skill) => skill.type === category
-              );
-
-              return (
-                <MotionContainer
-                  key={category}
-                  useInView={true}
-                  once={true}
-                  viewportAmount={0.3}
-                  animation='popIn'
-                  delay={index * STAGGER_DELAY}
-                  transition={{ type: 'spring', stiffness: 300, damping: 15 }}
-                >
-                  <div className='bg-white dark:bg-gray-900 rounded-xl shadow-md p-6 h-full hover:shadow-lg transition-shadow duration-300 ease-in-out'>
-                    <div className='flex items-center gap-3 mb-4'>
-                      <div className='p-2 bg-primary/10 rounded-md text-primary'>
-                        {ICONS[category]}
-                      </div>
-                      <h3 className='font-semibold text-lg text-gray-800 dark:text-white'>
-                        {category}
-                      </h3>
-                    </div>
-
-                    <div className='flex flex-wrap gap-2'>
-                      {filteredSkills.map((skill) => (
-                        <SkillBadge
-                          key={skill.name}
-                          name={skill.name}
-                          website={skill.website}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </MotionContainer>
-              );
-            })}
-          </div> */}
         </div>
       </MotionContainer>
     </section>
